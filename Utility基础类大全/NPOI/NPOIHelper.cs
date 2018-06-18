@@ -13,6 +13,7 @@ using NPOI.POIFS;
 using NPOI.Util;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
+using NPOI.XSSF.UserModel;
 
 namespace HD.Helper.Common
 {
@@ -93,7 +94,7 @@ namespace HD.Helper.Common
                         headerRow.CreateCell(0).SetCellValue(strHeaderText);
 
                         ICellStyle headStyle = workbook.CreateCellStyle();
-                        headStyle.Alignment = HorizontalAlignment.CENTER;
+                        headStyle.Alignment = HorizontalAlignment.Center;
                         IFont font = workbook.CreateFont();
                         font.FontHeightInPoints = 20;
                         font.Boldweight = 700;
@@ -110,7 +111,7 @@ namespace HD.Helper.Common
                     {
                         IRow headerRow = sheet.CreateRow(1);
                         ICellStyle headStyle = workbook.CreateCellStyle();
-                        headStyle.Alignment = HorizontalAlignment.CENTER;
+                        headStyle.Alignment = HorizontalAlignment.Center;
                         IFont font = workbook.CreateFont();
                         font.FontHeightInPoints = 10;
                         font.Boldweight = 700;
@@ -136,7 +137,7 @@ namespace HD.Helper.Common
 
                 #region 填充内容
                 ICellStyle contentStyle = workbook.CreateCellStyle();
-                contentStyle.Alignment = HorizontalAlignment.LEFT;
+                contentStyle.Alignment = HorizontalAlignment.Left;
                 IRow dataRow = sheet.CreateRow(rowIndex);
                 foreach (DataColumn column in dtSource.Columns)
                 {
@@ -228,20 +229,34 @@ namespace HD.Helper.Common
 
         //}
 
+        private static IWorkbook CreateWorkbook(Stream stream)
+        {
+            try
+                {
+                return new XSSFWorkbook(stream); //07
+            }
+            catch
+            {
+                return new HSSFWorkbook(stream); //03
+            }
 
+        }
         /// <summary>读取excel  
         /// 默认第一行为标头  
         /// </summary>  
         /// <param name="strFileName">excel文档路径</param>  
         /// <returns></returns>  
-        public static DataTable Import(string strFileName)
+        public static DataTable Import(string fileName)
         {
             DataTable dt = new DataTable();
 
-            HSSFWorkbook hssfworkbook;
-            using (FileStream file = new FileStream(strFileName, FileMode.Open, FileAccess.Read))
+            IWorkbook hssfworkbook;
+            using (FileStream file = new FileStream(fileName, FileMode.Open, FileAccess.Read))
             {
-                hssfworkbook = new HSSFWorkbook(file);
+                if (fileName.ToLower().IndexOf(".xlsx") > 0) // 2007版本
+                    hssfworkbook = new XSSFWorkbook(file);
+                else // 2003版本
+                    hssfworkbook = new HSSFWorkbook(file);
             }
             ISheet sheet = hssfworkbook.GetSheetAt(0);
             System.Collections.IEnumerator rows = sheet.GetRowEnumerator();
@@ -258,18 +273,111 @@ namespace HD.Helper.Common
             for (int i = (sheet.FirstRowNum + 1); i <= sheet.LastRowNum; i++)
             {
                 IRow row = sheet.GetRow(i);
+                if (row==null)
+                {
+                    continue;
+                }
                 DataRow dataRow = dt.NewRow();
-
+            
                 for (int j = row.FirstCellNum; j < cellCount; j++)
                 {
                     if (row.GetCell(j) != null)
-                        dataRow[j] = row.GetCell(j).ToString();
+                    {
+                        switch (row.GetCell(j).CellType)
+                        {
+                            case CellType.String:
+                                dataRow[j] = row.GetCell(j).StringCellValue;
+                                break;
+                            case CellType.Numeric:
+                                dataRow[j] = row.GetCell(j).NumericCellValue;
+                                break;
+                            case CellType.Boolean:
+                                dataRow[j] = row.GetCell(j).BooleanCellValue;
+                                break;
+                            default:
+                                dataRow[j] = row.GetCell(j).ToString();
+                                break;
+                        }
+                    }
                 }
-
-                dt.Rows.Add(dataRow);
+                if (string.Join("", dataRow.ItemArray) != "")
+                {
+                    dt.Rows.Add(dataRow);
+                }
+                
             }
             return dt;
         }
 
+
+        public static IList<T> ExportToList<T>(string fileName, string[] fields) where T : class, new()
+        {
+            IList<T> list = new List<T>();
+            IWorkbook hssfworkbook;
+            using (FileStream file = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+            {
+                if (fileName.ToLower().IndexOf(".xlsx") > 0) // 2007版本
+                    hssfworkbook = new XSSFWorkbook(file);
+                else // 2003版本
+                    hssfworkbook = new HSSFWorkbook(file);
+            }
+            ISheet sheet = hssfworkbook.GetSheetAt(0);
+            //遍历每一行数据
+            for (int i = sheet.FirstRowNum + 1, len = sheet.LastRowNum + 1; i < len; i++)
+            {
+                T t = new T();
+                IRow row = sheet.GetRow(i);
+                if (row == null)
+                {
+                    continue;
+                }
+                for (int j = 0, len2 = fields.Length; j < len2; j++)
+                {
+                    ICell cell = row.GetCell(j);
+                    object cellValue = null;
+                    if (cell == null)
+                    {
+                        continue;
+                    }
+                    switch (cell.CellType)
+                    {
+                        case CellType.String: //文本
+                            cellValue = cell.StringCellValue;
+                            break;
+                        case CellType.Numeric: //数值
+                            cellValue = Convert.ToInt32(cell.NumericCellValue);//Double转换为int
+                            break;
+                        case CellType.Boolean: //bool
+                            cellValue = cell.BooleanCellValue;
+                            break;
+
+                        case CellType.Blank: //空白
+                            cellValue = "";
+                            break;
+                        default:
+                            cellValue = "ERROR";
+                            break;
+                    }
+
+                    typeof(T).GetProperty(fields[j]).SetValue(t, cellValue, null);
+                }
+                var checkpro= typeof(T).GetProperties();
+                int nullnum = 0;
+                for (int jjj = 0; jjj < checkpro.Length; jjj++)
+                {
+                    if (checkpro[jjj].GetValue(t, null)==null)
+                    {
+                        nullnum++;
+                    }
+                }
+                if (nullnum == checkpro.Length)
+                {
+                    continue;
+                }
+                list.Add(t);
+            }
+
+            return list;
+        }
     }
 }

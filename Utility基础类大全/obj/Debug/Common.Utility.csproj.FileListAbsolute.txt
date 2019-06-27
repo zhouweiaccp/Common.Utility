@@ -105,3 +105,5 @@ G:\github合集\Common.Utility\Utility基础类大全\bin\Debug\Quartz.xml
 G:\github合集\Common.Utility\Utility基础类大全\obj\Debug\DotNet.Utilities.dll
 G:\github合集\Common.Utility\Utility基础类大全\obj\Debug\DotNet.Utilities.pdb
 G:\github合集\Common.Utility\Utility基础类大全\obj\Debug\Common.Utility.csprojResolveAssemblyReference.cache
+F:\Projectt\2017\github\zhouweiaccp_Common.Utility\Utility基础类大全\obj\Debug\Common.Utility.csprojAssemblyReference.cache
+F:\Projectt\2017\github\zhouweiaccp_Common.Utility\Utility基础类大全\obj\Debug\Common.Utility.csproj.CoreCompileInputs.cache

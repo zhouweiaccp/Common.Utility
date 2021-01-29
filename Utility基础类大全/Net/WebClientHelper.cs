@@ -195,6 +195,118 @@ namespace HD.Helper.Common
                 if (fs != null) fs.Close();
             }
         }
+       
+        /// <summary>    
+        /// 创建HTTP请求下载传用
+        /// </summary>    
+        /// <param name="url">URL地址</param>    
+        /// <returns></returns>    
+        private HttpWebRequest CreateRequestNew(string url, string method)
+        {
+            Uri uri = new Uri(url);
+
+            if (uri.Scheme == "https")
+                ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(this.CheckValidationResult);
+
+            // Set a default policy level for the "http:" and "https" schemes.    
+            HttpRequestCachePolicy policy = new HttpRequestCachePolicy(HttpRequestCacheLevel.Revalidate);
+            HttpWebRequest.DefaultCachePolicy = policy;
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+            //request.AllowAutoRedirect = false;
+            //request.AllowWriteStreamBuffering = false;
+            requestHeaders.Clear();
+            request.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9";
+            request.ContentType = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9";
+            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.111 Safari/537.36";
+          
+
+            request.Headers.Add("Accept-Encoding", "identity;q=1, *;q=0");
+            request.Headers.Add("Accept-Language", "zh-CN,zh;q=0.8");
+            //request.Headers.Add("Connection", "keep-alive"); //添加失败
+            //request.Connection = "keep-alive";               //添加失败
+            request.KeepAlive = true;                          //设置成功
+
+
+            request.Method = method;
+            if (proxy != null)
+                request.Proxy = proxy;
+            request.CookieContainer = cc;
+            foreach (string key in requestHeaders.Keys)
+            {
+                request.Headers.Add(key, requestHeaders[key]);
+            }
+         //  
+            return request;
+        }
+        /// <summary>    
+        //https://blog.csdn.net/u011127019/article/details/52571317
+        //https://docs.microsoft.com/en-us/dotnet/api/system.net.httpwebrequest.accept?view=netframework-4.7.2
+        /// 下载文件    //var datadown = new HD.Helper.Common.WebClientHelper();
+        //datadown.Encoding = System.Text.Encoding.UTF8;       
+        //        string uri = "http://192.168.253.125/Document/File_Download.aspx?file_id=23&checkout=false&r=0.4557689326505123&regionID=1&token=0000f7eae203ae9446cc8d42e0b44d59e2c6";
+        //string filename = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, DateTime.Now.Ticks.ToString() + "dsdf.doc");
+        //datadown.DownloadFile(uri, filename);
+
+        /// </summary>    
+        /// <param name="url">文件URL地址</param>    
+        /// <param name="filename">文件保存完整路径</param>    
+        public void DownloadFileNew(string url, string filename)
+        {
+         
+            try
+            {
+                HttpWebRequest request = CreateRequestNew(url, "GET");
+                 GetDataNew(request, filename);
+          
+            }catch(Exception ee){
+                Console.WriteLine(ee.ToString());
+            }
+          
+        }
+         private void GetDataNew(HttpWebRequest request, string filename)
+        {
+            try{
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            Stream stream = response.GetResponseStream();
+            responseHeaders = response.Headers;
+            //SaveCookiesToDisk();
+
+            DownloadEventArgs args = new DownloadEventArgs();
+            if (responseHeaders[HttpResponseHeader.ContentLength] != null)
+                args.TotalBytes = Convert.ToInt32(responseHeaders[HttpResponseHeader.ContentLength]);
+            string name = "";
+            foreach (var item in response.Headers.Keys)
+            {
+             //   Console.WriteLine(item + " " + response.Headers[item.ToString()].ToString());
+                if (item.ToString().Contains("Content-Disposition"))
+                {//filename="=?UTF-8?B? 5L2/55SobGxkYuWIhuaekGRvY2tlcuS4rWRvdG5ldOeoi+W6jyAoMSkuZG9jeA== ?=";
+                    var nameval = response.Headers[item.ToString()].ToString().Split(new string[] { "=?UTF-8?B?" },StringSplitOptions.RemoveEmptyEntries)[1].Replace("?=\";","");
+                    name = DecodeBase64("utf-8", nameval);
+                }
+            }
+             filename = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, DateTime.Now.Ticks.ToString() + name);
+            var  fs = new FileStream(filename, FileMode.Create, FileAccess.Write);
+          //  MemoryStream ms = new MemoryStream();
+            int count = 0;
+            byte[] buf = new byte[bufferSize];
+            while ((count = stream.Read(buf, 0, buf.Length)) > 0)
+            {
+              //  ms.Write(buf, 0, count);
+                fs.Write(buf, 0, count);
+                if (this.DownloadProgressChanged != null)
+                {
+                    args.BytesReceived += count;
+                    args.ReceivedData = new byte[count];
+                    Array.Copy(buf, args.ReceivedData, count);
+                    this.DownloadProgressChanged(this, args);
+                }
+            }
+            fs.Close();
+        }catch(Exception ee){
+                Console.WriteLine(ee.ToString());
+            }
+        }
 
         /// <summary>    
         /// 从指定URL下载数据    

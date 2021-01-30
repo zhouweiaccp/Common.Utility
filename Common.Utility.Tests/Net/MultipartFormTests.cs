@@ -113,7 +113,7 @@ namespace HD.Helper.Common.Tests
 
             content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
             content.Headers.Add("X-Mashape-Authorization", " App.MashapeHeader");
-            var response = HttpClientExtensions.PostAsJsonAsync(client, targeturi, new { rquest = "1" }).Result;
+        //    var response = HttpClientExtensions.PostAsJsonAsync(client, targeturi, new { rquest = "1" }).Result;
 
         }
         [TestMethod()]

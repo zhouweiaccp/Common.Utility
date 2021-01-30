@@ -264,7 +264,27 @@ namespace HD.Helper.Common
             }
           
         }
-         private void GetDataNew(HttpWebRequest request, string filename)
+        /// <summary>
+        /// base64解码
+        /// </summary>
+        /// <param name="code_type">utf-8</param>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        string DecodeBase64(string code_type, string code)
+        {
+            string decode = "";
+            byte[] bytes = Convert.FromBase64String(code);
+            try
+            {
+                decode = Encoding.GetEncoding(code_type).GetString(bytes);
+            }
+            catch
+            {
+                decode = code;
+            }
+            return decode;
+        }
+        private void GetDataNew(HttpWebRequest request, string filename)
         {
             try{
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();

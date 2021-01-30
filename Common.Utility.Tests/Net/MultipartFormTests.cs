@@ -7,7 +7,7 @@ using System.Text;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Net.Http.Formatting;
+//using System.Net.Http.Formatting;
 using System.Threading.Tasks;
 namespace HD.Helper.Common.Tests
 {

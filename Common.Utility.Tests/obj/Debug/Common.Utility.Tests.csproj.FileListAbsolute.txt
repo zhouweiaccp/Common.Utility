@@ -1,0 +1,2 @@
+D:\code\common_utility2\Common.Utility.Tests\obj\Debug\Common.Utility.Tests.csproj.App.config
+D:\code\common_utility2\Common.Utility.Tests\obj\Debug\Common.Utility.Tests.csproj.CoreCompileInputs.cache

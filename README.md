@@ -123,8 +123,18 @@
 86.  页面辅助类
 87.  验证码
 88.  compute计算机  ShutdownHelper 关机 重启，，HardwareInfoHelper【硬件信息】
-89   iis iis操作类
+89.   iis iis操作类
+90. [可用于生成短id](./Utility基础类大全/Id)可用于生成短id  git@gitee.com:NAlps/zcn.net.common.git/id/
 
 **最后，喜欢请点下stars**
 ## link
-*[](https://github.com/WeihanLi/WeihanLi.Common.git) net 常用帮助类，扩展方法等，构建自己的基础类库
+* [WeihanLi.Common](https://github.com/WeihanLi/WeihanLi.Common.git) net 常用帮助类，扩展方法等，构建自己的基础类库
+* [Masuit.Tools](git@github.com:zhouweiaccp/Masuit.Tools.git) 硬件监测 检验字符串是否是Email、手机号、URL、IP地址、身份证号  可用于生成短id，短hash等操作，纯数学运算 农历转换  Linq表达式树扩展 List转Datatable 多线程后台下载
+* [ZCN.NET.Common](https://gitee.com/NAlps/zcn.net.common/blob/master/ZCN.NET.Common/Id/SequentialGuidGenerator.cs) 。同时支持以下目标框架： .NET4.0、.NET4.5、.NET4.5.1、.NET4.5.2、.NET4.6、.NET4.6.1、.NET4.6.2、.NET4.7、.NET4.7.1、.NET4.7.2、.NET4.8、.NET Core 3.0、.NET Core 3.1、.NET 5.0。可以在Windows、Linux、MaxOS系统上开发部署。
+* []()
+* []()
+* []()
+* []()
+* []()
+* []()
+* []()

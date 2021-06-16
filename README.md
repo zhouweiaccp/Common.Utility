@@ -125,6 +125,7 @@
 88.  compute计算机  ShutdownHelper 关机 重启，，HardwareInfoHelper【硬件信息】
 89.   iis iis操作类
 90. [可用于生成短id](./Utility基础类大全/Id)可用于生成短id  git@gitee.com:NAlps/zcn.net.common.git/id/
+91.   git@gitee.com:NAlps/zcn.net.common.git/http/  httprequest 封装  上传文件 ,下载等
 
 **最后，喜欢请点下stars**
 ## link

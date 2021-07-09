@@ -79,6 +79,7 @@
 42.  分词辅助类
 43.  分页
 44.  加密解密
+     2021-7-9 \Utility基础类大全\加密解密 RSAFromX509.cs  Sha256.cs
 45.  压缩解压缩  GZipHelper【.net自带 ,winrar】
 46.  各种验证帮助类
 47.  图片
@@ -126,13 +127,43 @@
 89.   iis iis操作类
 90. [可用于生成短id](./Utility基础类大全/Id)可用于生成短id  git@gitee.com:NAlps/zcn.net.common.git/id/
 91.   git@gitee.com:NAlps/zcn.net.common.git/http/  httprequest 封装  上传文件 ,下载等
+93. [分布式id&分布式流水号] https://gitee.com/jackletter/DotNetCommon/wikis/6_%E5%88%86%E5%B8%83%E5%BC%8Fid&%E5%88%86%E5%B8%83%E5%BC%8F%E6%B5%81%E6%B0%B4%E5%8F%B7?sort_id=4098638
+   \Utility基础类大全\Id\DistributeGenerator.cs
 
 **最后，喜欢请点下stars**
 ## link
 * [WeihanLi.Common](https://github.com/WeihanLi/WeihanLi.Common.git) net 常用帮助类，扩展方法等，构建自己的基础类库
 * [Masuit.Tools](git@github.com:zhouweiaccp/Masuit.Tools.git) 硬件监测 检验字符串是否是Email、手机号、URL、IP地址、身份证号  可用于生成短id，短hash等操作，纯数学运算 农历转换  Linq表达式树扩展 List转Datatable 多线程后台下载
 * [ZCN.NET.Common](https://gitee.com/NAlps/zcn.net.common/blob/master/ZCN.NET.Common/Id/SequentialGuidGenerator.cs) 。同时支持以下目标框架： .NET4.0、.NET4.5、.NET4.5.1、.NET4.5.2、.NET4.6、.NET4.6.1、.NET4.6.2、.NET4.7、.NET4.7.1、.NET4.7.2、.NET4.8、.NET Core 3.0、.NET Core 3.1、.NET 5.0。可以在Windows、Linux、MaxOS系统上开发部署。
-* []()
+* [DotNetCommon](https://gitee.com/jackletter/DotNetCommon)搜集.neter开发常用的功能，运行环境： .net4.7；.netstandard2.0；net5.0；
+功能目录:
+
+    通用数据模型；
+    树状结构&平铺数据的访问；
+    序列化；
+    注册表；
+    编码和加解密；
+    分布式id&分布式流水号；
+    校验框架;
+    压缩&解压缩；
+    验证码生成；
+    汉字转拼音；
+    Dto和Entity转换之Mapper扩展；
+    递归篡改对象的属性值之Modify扩展；
+    将Dto属性投影到Entity之ModifyByDto扩展；
+    不同数据类型间的转换之To方法;
+    随机数；
+    对象池；
+    基于内存的并发消息队列；
+    反射工具；
+    主机诊断报告；
+    对象深度比对工具；
+    网络帮助类；
+    单位转换器（B/KB/MS/GB）；
+    金额大小写转换；
+    枚举类型扩展方法；
+    常用扩展方法；
+
 * []()
 * []()
 * []()
